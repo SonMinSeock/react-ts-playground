@@ -3,10 +3,10 @@ import { GlobalStyle } from "./styles/globalStyle";
 
 function App() {
   return (
-    <>
+    <div>
       <GlobalStyle />
       <Router />
-    </>
+    </div>
   );
 }
 
