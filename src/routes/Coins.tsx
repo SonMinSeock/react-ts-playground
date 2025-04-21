@@ -1,8 +1,21 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
+interface CoinInterface {
+  id: string;
+  name: string;
+  symbol: string;
+  rank: number;
+  is_new: boolean;
+  is_active: boolean;
+  type: string;
+}
+
 const Container = styled.div`
   padding: 0 20px;
+  max-width: 480px;
+  margin: 0 auto;
 `;
 
 const Header = styled.header`
@@ -34,49 +47,63 @@ const Coin = styled.li`
   }
 `;
 
-const coins = [
-  {
-    id: "btc-bitcoin",
-    name: "Bitcoin",
-    symbol: "BTC",
-    rank: 1,
-    is_new: false,
-    is_active: true,
-    type: "coin",
-  },
-  {
-    id: "eth-ethereum",
-    name: "Ethereum",
-    symbol: "ETH",
-    rank: 2,
-    is_new: false,
-    is_active: true,
-    type: "coin",
-  },
-  {
-    id: "usdt-tether",
-    name: "Tether",
-    symbol: "USDT",
-    rank: 3,
-    is_new: false,
-    is_active: true,
-    type: "token",
-  },
-];
+const Loader = styled.span`
+  display: block;
+  text-align: center;
+`;
+
+const ErrorMessage = styled(Loader)`
+  display: block;
+  text-align: center;
+  color: red;
+`;
 
 function Coins() {
+  const [coins, setCoins] = useState<CoinInterface[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await fetch("https://api.coinpaprika.com/v1/coins");
+
+        if (!response.ok) {
+          throw new Error(`HTTP Error! Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        setCoins(result.slice(0, 100));
+      } catch (error) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("알수없는 에러 발생했습니다.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
   return (
     <Container>
       <Header>
         <Title>코인</Title>
       </Header>
-      <CoinList>
-        {coins.map((coin) => (
-          <Coin key={coin.id}>
-            <Link to={`/${coin.id}`}>{coin.name} &rarr;</Link>
-          </Coin>
-        ))}
-      </CoinList>
+      {loading ? (
+        <Loader>Loading...</Loader>
+      ) : error ? (
+        <ErrorMessage>{error}</ErrorMessage>
+      ) : (
+        <CoinList>
+          {coins.map((coin) => (
+            <Coin key={coin.id}>
+              <Link to={`/${coin.id}`}>{coin.name} &rarr;</Link>
+            </Coin>
+          ))}
+        </CoinList>
+      )}
     </Container>
   );
 }
