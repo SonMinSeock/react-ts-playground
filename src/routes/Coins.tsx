@@ -39,8 +39,9 @@ const Coin = styled.li`
   border-radius: 15px;
   margin-bottom: 10px;
   a {
+    display: flex;
+    align-items: center;
     transition: color 0.2s ease-in-out;
-    display: block;
   }
   a:hover {
     color: ${(props) => props.theme.accentColor};
@@ -56,6 +57,12 @@ const ErrorMessage = styled(Loader)`
   display: block;
   text-align: center;
   color: red;
+`;
+
+const Img = styled.img`
+  width: 35px;
+  height: 35px;
+  margin-right: 10px;
 `;
 
 function Coins() {
@@ -99,7 +106,17 @@ function Coins() {
         <CoinList>
           {coins.map((coin) => (
             <Coin key={coin.id}>
-              <Link to={`/${coin.id}`}>{coin.name} &rarr;</Link>
+              <Link
+                to={{
+                  pathname: `/${coin.id}`,
+                  state: {
+                    name: coin.name,
+                  },
+                }}
+              >
+                <Img src={`https://cryptoicon-api.pages.dev/icons/128/color/${coin.symbol.toLowerCase()}.png`} />
+                {coin.name} &rarr;
+              </Link>
             </Coin>
           ))}
         </CoinList>
