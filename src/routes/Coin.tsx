@@ -92,6 +92,12 @@ const Loader = styled.span`
   text-align: center;
 `;
 
+const ErrorMessage = styled(Loader)`
+  display: block;
+  text-align: center;
+  color: red;
+`;
+
 const Overview = styled.div`
   display: flex;
   justify-content: space-between;
@@ -143,8 +149,8 @@ function Coin() {
   const { coinId } = useParams<RouteParams>();
   const { state } = useLocation<RouteState>();
   const [error, setError] = useState<string | null>(null);
-  const [info, setInfo] = useState<IInfoData>({});
-  const [priceInfo, setPriceInfo] = useState<IPriceData>({});
+  const [info, setInfo] = useState<IInfoData>();
+  const [priceInfo, setPriceInfo] = useState<IPriceData>();
   const priceMatch = useRouteMatch("/:coinId/price");
   const chartMatch = useRouteMatch("/:coinId/chart");
 
@@ -180,16 +186,18 @@ function Coin() {
   return (
     <Container>
       <Header>
-        <Title>{state?.name ? state.name : loading ? "Loading" : info.name}</Title>
+        <Title>{state?.name ? state.name : loading ? "Loading" : info?.name}</Title>
       </Header>
       {loading ? (
         <Loader>Loading...</Loader>
+      ) : error ? (
+        <ErrorMessage>{error}</ErrorMessage>
       ) : (
         <>
           <Overview>
             <OverviewItem>
               <span>Rank:</span>
-              <span>{info.rank}</span>
+              <span>{info?.rank}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Symbol:</span>
