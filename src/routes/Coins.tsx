@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { fetchCoins } from "../api/coin";
 
 interface CoinInterface {
   id: string;
@@ -66,45 +67,28 @@ const Img = styled.img`
 `;
 
 function Coins() {
-  const [coins, setCoins] = useState<CoinInterface[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await fetch("https://api.coinpaprika.com/v1/coins");
-
-        if (!response.ok) {
-          throw new Error(`HTTP Error! Status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        setCoins(result.slice(0, 100));
-      } catch (error) {
-        if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError("알수없는 에러 발생했습니다.");
-        }
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
+  const {
+    data: coins,
+    isError,
+    error,
+    isPending,
+  } = useQuery<CoinInterface[]>({
+    queryKey: ["coins"],
+    queryFn: fetchCoins,
+  });
 
   return (
     <Container>
       <Header>
         <Title>코인</Title>
       </Header>
-      {loading ? (
+      {isPending ? (
         <Loader>Loading...</Loader>
-      ) : error ? (
-        <ErrorMessage>{error}</ErrorMessage>
+      ) : isError ? (
+        <ErrorMessage>{error && "알수없는 에러가 발생했습니다"}</ErrorMessage>
       ) : (
         <CoinList>
-          {coins.map((coin) => (
+          {coins.slice(0, 100).map((coin) => (
             <Coin key={coin.id}>
               <Link
                 to={{
