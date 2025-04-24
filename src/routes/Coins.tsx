@@ -71,7 +71,7 @@ function Coins() {
     data: coins,
     isError,
     error,
-    isPending,
+    isLoading,
   } = useQuery<CoinInterface[]>({
     queryKey: ["coins"],
     queryFn: fetchCoins,
@@ -82,13 +82,13 @@ function Coins() {
       <Header>
         <Title>코인</Title>
       </Header>
-      {isPending ? (
+      {isLoading ? (
         <Loader>Loading...</Loader>
       ) : isError ? (
         <ErrorMessage>{error && "알수없는 에러가 발생했습니다"}</ErrorMessage>
       ) : (
         <CoinList>
-          {coins.slice(0, 100).map((coin) => (
+          {coins?.slice(0, 100).map((coin) => (
             <Coin key={coin.id}>
               <Link
                 to={{

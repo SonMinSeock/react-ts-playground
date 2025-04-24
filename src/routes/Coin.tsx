@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation, useParams, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import Price from "./Price";
 import Chart from "./Chart";
+import { useQuery } from "@tanstack/react-query";
+import { fetchCoinInfo, fetchCoinTickers } from "../api/coin";
 
 interface RouteParams {
   coinId: string;
@@ -145,54 +146,49 @@ const Tab = styled.span<{ isActive: boolean }>`
 `;
 
 function Coin() {
-  const [loading, setLoading] = useState(true);
   const { coinId } = useParams<RouteParams>();
   const { state } = useLocation<RouteState>();
-  const [error, setError] = useState<string | null>(null);
-  const [info, setInfo] = useState<IInfoData>();
-  const [priceInfo, setPriceInfo] = useState<IPriceData>();
   const priceMatch = useRouteMatch("/:coinId/price");
   const chartMatch = useRouteMatch("/:coinId/chart");
+  const {
+    data: info,
+    isLoading: isLoadingCoinInfo,
+    isError: isErrorCoinInfo,
+    error: errorCoinInfo,
+  } = useQuery<IInfoData>({
+    queryKey: ["info", coinId],
+    queryFn: () => fetchCoinInfo(coinId),
+  });
+  const {
+    data: priceInfo,
+    isLoading: isLoadingCoinPrice,
+    isError: isErrorCoinPrice,
+    error: errorCoinPrice,
+  } = useQuery<IPriceData>({
+    queryKey: ["tickers", coinId],
+    queryFn: () => fetchCoinTickers(coinId),
+  });
 
-  console.log(priceMatch, chartMatch);
+  const errorMessages = [
+    errorCoinInfo instanceof Error ? errorCoinInfo.message : null,
+    errorCoinPrice instanceof Error ? errorCoinPrice.message : null,
+  ].filter(Boolean); // Falsey 값 제외해서 배열로 받음
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const priceDataResponse = await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`);
-        const infoDataResponse = await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`);
-
-        if (!priceDataResponse.ok || !infoDataResponse.ok) {
-          throw new Error(`HTTP Error! Status: ${priceDataResponse.status}`);
-        }
-
-        const priceData = await priceDataResponse.json();
-        setPriceInfo(priceData);
-
-        const infoData = await infoDataResponse.json();
-        setInfo(infoData);
-      } catch (error) {
-        if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError("알수없는 에러 발생했습니다.");
-        }
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [coinId]);
+  const isLoading = isLoadingCoinInfo || isLoadingCoinPrice;
+  const isError = isErrorCoinInfo || isErrorCoinPrice;
 
   return (
     <Container>
       <Header>
-        <Title>{state?.name ? state.name : loading ? "Loading" : info?.name}</Title>
+        <Title>{state?.name ? state.name : isLoadingCoinInfo || isLoadingCoinPrice ? "Loading" : info?.name}</Title>
       </Header>
-      {loading ? (
-        <Loader>Loading...</Loader>
-      ) : error ? (
-        <ErrorMessage>{error}</ErrorMessage>
-      ) : (
+      {isLoading && <Loader>Loading...</Loader>}
+      {isError && (
+        <ErrorMessage>
+          {errorMessages.length > 0 ? errorMessages.join(" / ") : "알 수 없는 에러가 발생했습니다."}
+        </ErrorMessage>
+      )}
+      {!isLoading && !isError && info && priceInfo && (
         <>
           <Overview>
             <OverviewItem>
