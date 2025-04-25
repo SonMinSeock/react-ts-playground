@@ -4,71 +4,9 @@ import Price from "./Price";
 import Chart from "./Chart";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCoinInfo, fetchCoinTickers } from "../api/coin";
-
-interface RouteParams {
-  coinId: string;
-}
-
-interface RouteState {
-  name: string;
-}
-
-interface IInfoData {
-  id: string;
-  name: string;
-  symbol: string;
-  rank: number;
-  is_new: boolean;
-  is_active: boolean;
-  type: string;
-  logo: string;
-  description: string;
-  message: string;
-  open_source: boolean;
-  started_at: string;
-  development_status: string;
-  hardware_wallet: boolean;
-  proof_type: string;
-  org_structure: string;
-  hash_algorithm: string;
-  first_data_at: string;
-  last_data_at: string;
-}
-
-interface IQuote {
-  price: number;
-  volume_24h: number;
-  volume_24h_change_24h: number;
-  market_cap: number;
-  market_cap_change_24h: number;
-  percent_change_15m: number;
-  percent_change_30m: number;
-  percent_change_1h: number;
-  percent_change_6h: number;
-  percent_change_12h: number;
-  percent_change_24h: number;
-  percent_change_7d: number;
-  percent_change_30d: number;
-  percent_change_1y: number;
-  ath_price: number;
-  ath_date: string;
-  percent_from_price_ath: number;
-}
-
-interface IPriceData {
-  id: string;
-  name: string;
-  symbol: string;
-  rank: number;
-  total_supply: number;
-  max_supply: number;
-  beta_value: number;
-  first_data_at: string;
-  last_updated: string;
-  quotes: {
-    USD: IQuote;
-  };
-}
+import { IInfoData, IPriceData } from "../api/types";
+import { RouteParams, RouteState } from "../types/route";
+import { IoIosArrowBack } from "react-icons/io";
 
 const Container = styled.div`
   padding: 0 20px;
@@ -77,10 +15,16 @@ const Container = styled.div`
 `;
 
 const Header = styled.header`
+  position: relative;
+  a {
+    position: absolute;
+    left: 10px;
+  }
   height: 10vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  grid-template-columns: repeat(2, 1fr);
 `;
 
 const Title = styled.h1`
@@ -180,6 +124,9 @@ function Coin() {
   return (
     <Container>
       <Header>
+        <Link to={".."}>
+          <IoIosArrowBack size={30} />
+        </Link>
         <Title>{state?.name ? state.name : isLoadingCoinInfo || isLoadingCoinPrice ? "Loading" : info?.name}</Title>
       </Header>
       {isLoading && <Loader>Loading...</Loader>}
