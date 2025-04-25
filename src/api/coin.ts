@@ -29,3 +29,13 @@ export async function fetchCoinTickers(coinId: string) {
   const result = await response.json();
   return result;
 }
+
+export async function fetchCoinHistory(coinId: string) {
+  const response = await fetch(`https://ohlcv-api.nomadcoders.workers.dev/?coinId=${coinId}`);
+
+  if (!response.ok) {
+    throw new Error(`HTTP Error! Status: ${response.status}`);
+  }
+  const result = await response.json();
+  return result;
+}
