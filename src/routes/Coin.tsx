@@ -7,6 +7,7 @@ import { fetchCoinInfo, fetchCoinTickers } from "../api/coin";
 import { IInfoData, IPriceData } from "../api/types";
 import { RouteParams, RouteState } from "../types/route";
 import { IoIosArrowBack } from "react-icons/io";
+import { Helmet } from "react-helmet";
 
 const Container = styled.div`
   padding: 0 20px;
@@ -111,6 +112,7 @@ function Coin() {
   } = useQuery<IPriceData>({
     queryKey: ["tickers", coinId],
     queryFn: () => fetchCoinTickers(coinId),
+    refetchInterval: 5000,
   });
 
   const errorMessages = [
@@ -123,6 +125,9 @@ function Coin() {
 
   return (
     <Container>
+      <Helmet>
+        <title>{state?.name ? state.name : isLoadingCoinInfo || isLoadingCoinPrice ? "Loading" : info?.name}</title>
+      </Helmet>
       <Header>
         <Link to={".."}>
           <IoIosArrowBack size={30} />
@@ -147,8 +152,8 @@ function Coin() {
               <span>${info?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
-              <span>Open Source:</span>
-              <span>{info?.open_source ? "Yes" : "No"}</span>
+              <span>Price:</span>
+              <span>${priceInfo.quotes.USD.price}</span>
             </OverviewItem>
           </Overview>
           <Description>{info?.description}</Description>
