@@ -177,7 +177,16 @@ function Coin() {
           </Tabs>
           <Switch>
             <Route path={`/:coinId/price`}>
-              <Price />
+              <Price
+                priceInfo={{
+                  ath_price: priceInfo.quotes.USD.ath_price,
+                  ath_date: priceInfo.quotes.USD.ath_date,
+                  percent_change_1h: priceInfo.quotes.USD.percent_change_1h,
+                  percent_change_6h: priceInfo.quotes.USD.percent_change_6h,
+                  percent_change_12h: priceInfo.quotes.USD.percent_change_12h,
+                  percent_change_24h: priceInfo.quotes.USD.percent_change_24h,
+                }}
+              />
             </Route>
             <Route path={`/:coinId/chart`}>
               <Chart coinId={coinId} />
