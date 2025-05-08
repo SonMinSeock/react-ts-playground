@@ -22,6 +22,7 @@ const ModeBtn = styled.div`
   svg {
     color: #ffeb3b;
   }
+  z-index: 1;
 `;
 
 function App() {
