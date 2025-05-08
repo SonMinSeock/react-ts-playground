@@ -5,7 +5,3 @@ export interface RouteParams {
 export interface RouteState {
   name: string;
 }
-
-export interface IRouterProps {
-  isDark: boolean;
-}

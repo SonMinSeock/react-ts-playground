@@ -8,7 +8,6 @@ import { IInfoData, IPriceData } from "../api/types";
 import { RouteParams, RouteState } from "../types/route";
 import { IoIosArrowBack } from "react-icons/io";
 import { Helmet } from "react-helmet";
-import { ICoinProps } from "../types/props";
 
 const Container = styled.div`
   padding: 0 20px;
@@ -91,7 +90,7 @@ const Tab = styled.span<{ isActive: boolean }>`
   }
 `;
 
-function Coin({ isDark }: ICoinProps) {
+function Coin() {
   const { coinId } = useParams<RouteParams>();
   const { state } = useLocation<RouteState>();
   const priceMatch = useRouteMatch("/:coinId/price");
@@ -190,7 +189,7 @@ function Coin({ isDark }: ICoinProps) {
               />
             </Route>
             <Route path={`/:coinId/chart`}>
-              <Chart coinId={coinId} isDark={isDark} />
+              <Chart coinId={coinId} />
             </Route>
           </Switch>
         </>

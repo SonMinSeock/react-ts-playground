@@ -17,7 +17,7 @@ const ErrorMessage = styled(Loader)`
   color: red;
 `;
 
-function Chart({ coinId, isDark }: IChartProps) {
+function Chart({ coinId }: IChartProps) {
   const { data, isLoading, isError, error } = useQuery<IHistorical[]>({
     queryKey: ["ohlcv", coinId],
     queryFn: () => fetchCoinHistory(coinId),
@@ -30,8 +30,8 @@ function Chart({ coinId, isDark }: IChartProps) {
       {isError && <ErrorMessage>{error ? error.message : "알 수 없는 에러가 발생했습니다."}</ErrorMessage>}
       {!isLoading && !isError && (
         <>
-          <LineChart data={data ?? []} isDark={isDark} />
-          <CandleChart data={data ?? []} isDark={isDark} />
+          <LineChart data={data ?? []} />
+          <CandleChart data={data ?? []} />
         </>
       )}
     </>

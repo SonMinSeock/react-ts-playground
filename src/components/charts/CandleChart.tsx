@@ -1,7 +1,10 @@
 import ReactApexChart from "react-apexcharts";
 import { ICandleChartProps } from "../../types/props";
+import { useRecoilValue } from "recoil";
+import { isDarkAtom } from "../../atoms/themeAtom";
 
-function CandleChart({ data, isDark }: ICandleChartProps) {
+function CandleChart({ data }: ICandleChartProps) {
+  const isDark = useRecoilValue(isDarkAtom);
   return (
     <div>
       <ReactApexChart

@@ -2,9 +2,10 @@ import styled, { ThemeProvider } from "styled-components";
 import Router from "./Router";
 import { GlobalStyle } from "./styles/globalStyle";
 import { lightTheme, darkTheme } from "./styles/theme";
-import { useState } from "react";
 import { FaMoon } from "react-icons/fa";
 import { IoMdSunny } from "react-icons/io";
+import { useRecoilValue } from "recoil";
+import { isDarkAtom } from "./atoms/themeAtom";
 
 const ModeBtn = styled.div`
   position: fixed;
@@ -24,15 +25,15 @@ const ModeBtn = styled.div`
 `;
 
 function App() {
-  const [isDark, setIsDark] = useState(true);
-  const toggleDark = () => setIsDark((prev) => !prev);
+  const isDark = useRecoilValue(isDarkAtom);
+
   return (
     <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-      <ModeBtn onClick={toggleDark} theme={isDark ? darkTheme : lightTheme}>
+      <ModeBtn theme={isDark ? darkTheme : lightTheme}>
         {isDark ? <IoMdSunny size={20} /> : <FaMoon size={20} />}
       </ModeBtn>
       <GlobalStyle />
-      <Router isDark={isDark} />
+      <Router />
     </ThemeProvider>
   );
 }

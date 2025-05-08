@@ -1,7 +1,10 @@
 import ReactApexChart from "react-apexcharts";
 import { ILineChartProps } from "../../types/props";
+import { useRecoilValue } from "recoil";
+import { isDarkAtom } from "../../atoms/themeAtom";
 
-function LineChart({ data, isDark }: ILineChartProps) {
+function LineChart({ data }: ILineChartProps) {
+  const isDark = useRecoilValue(isDarkAtom);
   return (
     <div>
       <ReactApexChart
