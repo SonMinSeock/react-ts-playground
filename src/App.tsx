@@ -4,7 +4,7 @@ import { GlobalStyle } from "./styles/globalStyle";
 import { lightTheme, darkTheme } from "./styles/theme";
 import { FaMoon } from "react-icons/fa";
 import { IoMdSunny } from "react-icons/io";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isDarkAtom } from "./atoms/themeAtom";
 
 const ModeBtn = styled.div`
@@ -26,10 +26,12 @@ const ModeBtn = styled.div`
 
 function App() {
   const isDark = useRecoilValue(isDarkAtom);
+  const setIsDark = useSetRecoilState(isDarkAtom);
 
+  const toggleMode = () => setIsDark((prev) => !prev);
   return (
     <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-      <ModeBtn theme={isDark ? darkTheme : lightTheme}>
+      <ModeBtn onClick={toggleMode} theme={isDark ? darkTheme : lightTheme}>
         {isDark ? <IoMdSunny size={20} /> : <FaMoon size={20} />}
       </ModeBtn>
       <GlobalStyle />
