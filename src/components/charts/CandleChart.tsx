@@ -1,7 +1,7 @@
 import ReactApexChart from "react-apexcharts";
 import { ICandleChartProps } from "../../types/props";
 
-function CandleChart({ data }: ICandleChartProps) {
+function CandleChart({ data, isDark }: ICandleChartProps) {
   return (
     <div>
       <ReactApexChart
@@ -19,7 +19,7 @@ function CandleChart({ data }: ICandleChartProps) {
             type: "datetime",
           },
           theme: {
-            mode: "dark",
+            mode: isDark ? "dark" : "light",
           },
           chart: {
             height: 500,

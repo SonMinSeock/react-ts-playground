@@ -1,7 +1,7 @@
 import ReactApexChart from "react-apexcharts";
 import { ILineChartProps } from "../../types/props";
 
-function LineChart({ data }: ILineChartProps) {
+function LineChart({ data, isDark }: ILineChartProps) {
   return (
     <div>
       <ReactApexChart
@@ -29,7 +29,7 @@ function LineChart({ data }: ILineChartProps) {
             type: "datetime",
           },
           theme: {
-            mode: "dark",
+            mode: isDark ? "dark" : "light",
           },
           chart: {
             height: 500,

@@ -32,7 +32,7 @@ function App() {
         {isDark ? <IoMdSunny size={20} /> : <FaMoon size={20} />}
       </ModeBtn>
       <GlobalStyle />
-      <Router />
+      <Router isDark={isDark} />
     </ThemeProvider>
   );
 }
