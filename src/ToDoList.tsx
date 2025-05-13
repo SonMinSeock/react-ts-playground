@@ -7,6 +7,7 @@ interface IFormData {
   username: string;
   password: string;
   password1: string;
+  extraError: string;
 }
 
 function ToDoList() {
@@ -14,10 +15,14 @@ function ToDoList() {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<IFormData>();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onValid = (data: any) => {
-    console.log(data);
+
+  const onValid = (data: IFormData) => {
+    if (data.password !== data.password1) {
+      setError("password1", { message: "Password are not the same." }, { shouldFocus: true });
+    }
+    // setError("extraError", { message: "Server offline." });
   };
 
   return (
@@ -34,7 +39,16 @@ function ToDoList() {
           placeholder="Email"
         />
         <span>{errors?.email?.message}</span>
-        <input {...register("firstName", { required: "First Name is Required." })} placeholder="First Name" />
+        <input
+          {...register("firstName", {
+            required: "First Name is Required.",
+            validate: {
+              noSon: (data: string) => (data.includes("Son") ? "no Son not allowed." : true),
+              noNiki: (data: string) => (data.includes("Niki") ? "no Niki not allowed." : true),
+            },
+          })}
+          placeholder="First Name"
+        />
         <span>{errors?.firstName?.message}</span>
         <input {...register("lastName", { required: "Last Name is Required." })} placeholder="Last Name" />
         <span>{errors?.lastName?.message}</span>
@@ -66,6 +80,7 @@ function ToDoList() {
         />
         <span>{errors?.password1?.message}</span>
         <button>Add</button>
+        <span>{errors?.extraError?.message}</span>
       </form>
     </div>
   );
